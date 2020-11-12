@@ -9,7 +9,14 @@ const REQUEST_BILLS = "REQUEST_BILLS",
   REMOVE_BILL = "REMOVE_BILL";
 
 export const requestAllBills = () => {
-  let data = axios.get("/api/bills").then((res) => res.data);
+  return (dispatch) => {
+    return axios.get("/api/bills").then(({ data }) => {
+      dispatch(getAllBills(data));
+    });
+  };
+};
+
+const getAllBills = (data) => {
   return {
     type: REQUEST_BILLS,
     payload: data,
@@ -17,25 +24,38 @@ export const requestAllBills = () => {
 };
 
 export const addBill = (name, cost, date, type) => {
-  let data = axios
-    .post("/api/bills/add", {
-      name,
-      cost,
-      date,
-      type,
-    })
-    .then((res) => res.data);
+  return (dispatch) => {
+    return axios
+      .post("/api/bills/add", {
+        name,
+        cost,
+        date,
+        type,
+      })
+      .then(({ data }) => {
+        dispatch(concatBill(data[0]));
+      });
+  };
+};
+
+const concatBill = (bill) => {
   return {
     type: ADD_BILL,
-    payload: data,
+    payload: bill,
   };
 };
 
 export const removeBill = (id) => {
-  axios.delete(`/api/bills/${id}`)
+  return (dispatch) => {
+    axios.delete(`/api/bills/${id}`)
+    .then(res => dispatch(filterBill(id)))
+  }
+};
+
+const filterBill = (id) => {
   return {
     type: REMOVE_BILL,
-    payload: id
+    payload: id,
   };
 };
 
@@ -43,12 +63,15 @@ export default function reducer(state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {
-    case REQUEST_BILLS + "_FULFILLED":
+    case REQUEST_BILLS:
       return { ...state, bills: payload };
-    case ADD_BILL + "_FULFILLED":
+    case ADD_BILL:
       return { ...state, bills: [...state.bills, payload] };
-    case REMOVE_BILL + "_FULFILLED":
-      return { ...state, bills: state.bills.filter(el => el.bill_id !== payload) };
+    case REMOVE_BILL:
+      return {
+        ...state,
+        bills: state.bills.filter((bill) => bill.bill_id !== payload),
+      };
     default:
       return state;
   }

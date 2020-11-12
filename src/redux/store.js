@@ -1,5 +1,5 @@
 import { createStore, combineReducers, applyMiddleware } from "redux";
-import promiseMiddleware from "redux-promise-middleware";
+import thunk from "redux-thunk";
 import userReducer from "./userReducer";
 import billReducer from "./billReducer";
 
@@ -8,4 +8,4 @@ const rootReducer = combineReducers({
   user: userReducer,
 });
 
-export default createStore(rootReducer, applyMiddleware(promiseMiddleware));
+export default createStore(rootReducer, applyMiddleware(thunk));

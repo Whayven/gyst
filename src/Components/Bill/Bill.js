@@ -1,16 +1,22 @@
 import React from "react";
-import {useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { removeBill } from "../../redux/billReducer";
 import styled from "styled-components";
 
 const BillContainer = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
-  height: 140px;
-  width: 200px;
-  margin: 5px auto;
+  justify-content: space-between;
+  height: 50px;
+  width: 65%;
+  margin: 10px auto 10px auto;
+  padding-top: 15px;
+  border-top: 2px solid black;
+
+  span {
+    font-weight: 600;
+    margin: 0 5px;
+  }
 `;
 
 const Button = styled.button`
@@ -29,22 +35,42 @@ const Button = styled.button`
   }
 `;
 
-
 const Bill = (props) => {
   const dispatch = useDispatch();
 
-  const ButtonPanel = (
-    <>
-      {/* <Button>Edit</Button> */}
-      <Button onClick={() => dispatch(removeBill(props.id))}>Delete</Button>
-    </>
-  );
+  const { id, name, cost, dueDate, type } = props;
+
+  const remove = () => {
+    dispatch(removeBill(id));
+  };
+
+  const formatDate = (date) => {
+    // return date.substring(0, 10);
+    const dateObj = new Date(date);
+    let dd = dateObj.getDate();
+    let mm = dateObj.getMonth() + 1;
+    let yyyy = dateObj.getFullYear();
+    if (dd < 10) {
+      dd = "0" + dd;
+    }
+    if (mm < 10) {
+      mm = "0" + mm;
+    }
+    return `${mm}-${dd}-${yyyy}`;
+  };
 
   return (
     <BillContainer>
-      <h3>Name: {props.name}</h3>
-      <h3>Cost: ${props.cost}</h3>
-      {ButtonPanel}
+      <div>
+        <span>{name}</span>
+        <span>/</span>
+        <span>${cost}</span>
+        <br />
+        <span>{formatDate(dueDate)}</span>
+        <span>/</span>
+        <span>{type}</span>
+      </div>
+      <Button onClick={() => remove()}>Delete</Button>
     </BillContainer>
   );
 };

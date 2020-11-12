@@ -34,21 +34,22 @@ const formatDate = (date) => {
   let mm = date.getMonth() + 1;
   let yyyy = date.getFullYear();
   if (dd < 10) {
-    dd = '0' + dd;
+    dd = "0" + dd;
   }
   if (mm < 10) {
-    mm = '0' + mm;
+    mm = "0" + mm;
   }
   return `${yyyy}-${mm}-${dd}`;
 };
 
-const CreateBill = () => {
+const CreateBill = (props) => {
   const dispatch = useDispatch();
   const today = new Date();
   const [name, setName] = useState("");
   const [cost, setCost] = useState(0);
   const [type, setType] = useState("");
   const [payBy, setPayBy] = useState(formatDate(today));
+  const [types] = useState(["Utility", "Credit", "Insurance", "Miscellaneous"]);
 
   const add = () => {
     dispatch(addBill(name, cost, payBy, type));
@@ -61,6 +62,8 @@ const CreateBill = () => {
     setPayBy(formatDate(today));
     setType("");
   };
+
+  const mappedTypes = types.map((type) => <option value={type}>{type}</option>);
 
   return (
     <>
@@ -84,11 +87,16 @@ const CreateBill = () => {
           onChange={(e) => setPayBy(e.target.value)}
         />
         <label>Type:</label>
-        <input
+        <select
+          name="type"
+          id="type"
           value={type}
-          type="text"
-          onChange={(e) => setType(e.target.value)}
-        />
+          onChange={(e) => {
+            setType(e.target.value);
+          }}
+        >
+          {mappedTypes}
+        </select>
       </CreateContainer>
       <Button onClick={() => add()}>Add</Button>
     </>

@@ -69,20 +69,20 @@ const Info = styled.span`
 const Manage = () => {
   const dispatch = useDispatch();
 
-  const user = useSelector(state => state.user.user);
-  const bills = useSelector(state => state.bill.bills);
+  const user = useSelector((state) => state.user.user);
+  const bills = useSelector((state) => state.bill.bills);
 
   const [income, setIncome] = useState(user.income);
   const [userName, setUserName] = useState(user.name);
   const [editProfile, setEditProfile] = useState(false);
 
   useEffect(() => {
-    dispatch(requestAllBills())
-  }, [bills]);
+    refreshBills();
+  }, []);
 
   useEffect(() => {
     refreshUser();
-  }, [])
+  }, []);
 
   const updateUser = () => {
     axios
@@ -106,8 +106,8 @@ const Manage = () => {
   };
 
   const refreshBills = () => {
-    dispatch(requestAllBills);
-  }
+    dispatch(requestAllBills());
+  };
 
   const toggleEdit = () => {
     setIncome(user.income);
@@ -151,10 +151,27 @@ const Manage = () => {
       <Button onClick={toggleEdit}>Edit</Button>
     </>
   );
-
+  /*
+   bill {
+     bill_id,
+     cost,
+     due_date,
+     bill_list_id,
+     name,
+     type   
+   }
+   */
   const mappedBills = bills.map((bill) => {
     return (
-      <Bill id={bill.bill_id} key={bill.bill_id} name={bill.name} cost={bill.cost} />
+      <Bill
+        id={bill.bill_id}
+        key={bill.bill_id}
+        name={bill.name}
+        cost={bill.cost}
+        dueDate={bill.due_date}
+        type={bill.type}
+        refreshBills={refreshBills}
+      />
     );
   });
 
@@ -171,9 +188,9 @@ const Manage = () => {
         {nameField}
       </ProfileForm>
       <Header>Manage Bills</Header>
-      <CreateBill />
+      <CreateBill refreshBills={refreshBills} />
       {mappedBills}
-      <br/>
+      <br />
     </Container>
   );
 };
