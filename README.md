@@ -3,8 +3,11 @@ Gyst is a bill-tracking web application with a simple UI that focuses on conveni
 
 ## Technologies Used:
 - React
-- Redux
-- Styled-Components
 - Node
 - Express
 - PostgreSQL
+- Redux
+- ChartJs
+- Styled-Components
+
+## Live Link: https://getthegyst.net
