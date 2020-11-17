@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const massive = require("massive");
 const session = require("express-session");
+const path = require("path");
 const authCtrl = require("./Controllers/authController");
 const billCtrl = require("./Controllers/billController");
 const userCtrl = require("./Controllers/userController");
@@ -28,6 +29,9 @@ massive({
   console.log("db connected");
 });
 
+app.use(express.static(`${__dirname}/../build`));
+
+
 app.get("/api/auth/me", authCtrl.getSession);
 app.post("/api/auth/register", authCtrl.register);
 app.post("/api/auth/login", authCtrl.login);
@@ -38,6 +42,10 @@ app.put("/api/user/profile", userCtrl.updateProfile);
 app.get("/api/bills", billCtrl.getBills);
 app.post("/api/bills/add", billCtrl.addBill);
 app.delete("/api/bills/:id", billCtrl.deleteBill);
+
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../build/index.html"));
+});
 
 app.listen(SERVER_PORT, () =>
   console.log(`Server running on port ${SERVER_PORT}`)

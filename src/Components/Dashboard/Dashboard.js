@@ -81,10 +81,11 @@ const Dashboard = () => {
 
   useEffect(() => {
     const tempData = [balance];
-    let temp;
+    let filtered, reduced;
     for (let i = 0; i < types.length; i++) {
-      temp = reduceCost(filterBills(types[i], bills));
-      tempData.unshift(temp);
+      filtered = filterBills(types[i], bills);
+      reduced = reduceCost(filtered);
+      tempData.unshift(reduced);
     }
     setData({
       labels: ["Utility", "Credit", "Insurance", "Miscellaneous", "Balance"],
@@ -112,10 +113,15 @@ const Dashboard = () => {
   }, [balance]);
 
   useEffect(() => {
-    if (!isEmpty(bills))
-    setBalance(user.income - reduceCost(bills))
-    console.log(balance);
-  }, [bills])
+    let calculatedBalance = 0,
+    totalCost = 0;
+    if (bills.length !== 0 && bills !== undefined) {
+      totalCost = reduceCost(bills);
+      calculatedBalance = user.income - totalCost;
+      setBalance(calculatedBalance);
+      console.log(bills.length);
+    }
+  }, [bills]);
 
   const filterBills = (type, bills) => {
     return bills.filter((bill) => type === bill.type);

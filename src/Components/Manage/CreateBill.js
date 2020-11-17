@@ -47,7 +47,7 @@ const CreateBill = (props) => {
   const today = new Date();
   const [name, setName] = useState("");
   const [cost, setCost] = useState(0);
-  const [type, setType] = useState("");
+  const [type, setType] = useState("Utility");
   const [payBy, setPayBy] = useState(formatDate(today));
   const [types] = useState(["Utility", "Credit", "Insurance", "Miscellaneous"]);
 
